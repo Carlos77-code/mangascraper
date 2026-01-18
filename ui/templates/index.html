@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaScraper - Baixe seus mangás</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">MangaScraper</h1>
+            <p class="subtitle">Baixe capítulos de mangá/manhwa e converta em PDF com um clique</p>
+        </header>
+
+        <main class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="url">URL do Capítulo</label>
+                    <input id="url" type="text" placeholder="https://mangadex.org/chapter/..." required>
+                    <small style="color: #6b7280; display:block; margin-top:6px;">Apenas MangaDex (mangadex.org) é suportado.</small>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="name">Nome do Mangá</label>
+                        <input id="name" type="text" placeholder="Ex: One Piece" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="chapter">Capítulo</label>
+                        <input id="chapter" type="text" placeholder="Ex: 1000" required>
+                    </div>
+                </div>
+                
+                <button id="startButton" class="primary-button">📥 Download & Gerar PDF</button>
+            </div>
+
+            <div class="status-section">
+                <div class="progress-container">
+                    <progress id="progress" value="0" max="100"></progress>
+                    <span id="progress-text">0%</span>
+                </div>
+                <p id="status" class="status-message">Pronto para começar</p>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 MangaScraper | Feito com ❤️ para os fãs de mangá</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
