@@ -105,6 +105,10 @@ def update_status(progress, message):
     status["progress"] = progress
     status["message"] = message
 
+@app.route("/")
+def health():
+    return {"status": "running"}, 200
+    
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(
