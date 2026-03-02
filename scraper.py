@@ -89,18 +89,12 @@ from io import BytesIO
 from scrapers.mangadex_scraper import MangaDexScraper
 
 def sanitize(text):
-    """Remove caracteres proibidos de nomes de arquivos."""
     forbidden = r'\/:*?"<>|'
     for char in forbidden:
         text = text.replace(char, "_")
     return text
 
 def fetch_manga_chapter(url, manga_name, chapter_number, status_callback=None):
-    """
-    Faz o scraping e gera PDF em memória.
-    Retorna: dict com 'buffer' (BytesIO) e 'filename'
-    """
-
     def update(p, msg):
         if status_callback:
             status_callback(p, msg)
@@ -123,7 +117,6 @@ def fetch_manga_chapter(url, manga_name, chapter_number, status_callback=None):
     safe_name = sanitize(manga_name.replace(" ", "_"))
     pdf_filename = f"{safe_name}_Chapter_{chapter_number}.pdf"
 
-    # ---------- Download das imagens ----------
     pil_images = []
     total = len(images)
 
@@ -133,7 +126,6 @@ def fetch_manga_chapter(url, manga_name, chapter_number, status_callback=None):
         r.raise_for_status()
         pil_images.append(Image.open(BytesIO(r.content)).convert("RGB"))
 
-    # ---------- Gera PDF em Memória (BytesIO) ----------
     update(90, "Generating PDF")
     pdf_buffer = BytesIO()
     
@@ -145,13 +137,11 @@ def fetch_manga_chapter(url, manga_name, chapter_number, status_callback=None):
         resolution=100,
         quality=95
     )
-    # Resetar cursor para o início para leitura posterior
     pdf_buffer.seek(0)
 
     update(100, "PDF ready")
     print(f"[SUCCESS] PDF generated in memory: {pdf_filename}")
 
-    # Retorna dicionário com buffer e nome do arquivo
     return {
         'buffer': pdf_buffer,
         'filename': pdf_filename
