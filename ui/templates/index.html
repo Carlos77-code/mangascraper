@@ -1,118 +1,164 @@
-<!-- <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangaScraper - Baixe seus mangás</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1 class="title">MangaScraper</h1>
-            <p class="subtitle">Baixe capítulos de mangá/manhwa e converta em PDF com um clique</p>
-        </header>
-
-        <main class="main-content">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="url">URL do Capítulo</label>
-                    <input id="url" type="text" placeholder="https://mangadex.org/chapter/..." required>
-                    <small style="color: #6b7280; display:block; margin-top:6px;">Apenas MangaDex (mangadex.org) é suportado.</small>
-                </div>
-                
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="name">Nome do Mangá</label>
-                        <input id="name" type="text" placeholder="Ex: One Piece" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="chapter">Capítulo</label>
-                        <input id="chapter" type="text" placeholder="Ex: 1000" required>
-                    </div>
-                </div>
-                
-                <button id="startButton" class="primary-button">📥 Download & Gerar PDF</button>
-            </div>
-
-            <div class="status-section">
-                <div class="progress-container">
-                    <progress id="progress" value="0" max="100"></progress>
-                    <span id="progress-text">0%</span>
-                </div>
-                <p id="status" class="status-message">Pronto para começar</p>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <p>© 2025 MangaScraper | Feito com ❤️ para os fãs de mangá</p>
-        </footer>
-    </div>
-
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangaScraper - Baixe seus mangás</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="MangaScraper - Baixe capítulos de mangá do MangaDex e converta em PDF">
+  <meta name="theme-color" content="#0D0D0D">
+  <title>MangaScraper</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MangaScraper">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="title">MangaScraper</h1>
-            <p class="subtitle">Baixe capítulos de mangá/manhwa e converta em PDF com um clique</p>
-        </header>
+  <div id="app">
+    <header class="header" role="banner">
+      <a href="/" class="logo" aria-label="MangaScraper - Início">
+        <span class="logo-mark" aria-hidden="true">M</span>
+        <span class="logo-text">MangaScraper</span>
+      </a>
+      <div class="header-actions">
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="Alternar tema escuro/claro" aria-pressed="true">
+          <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button type="button" class="icon-btn" id="contrastToggle" aria-label="Alternar alto contraste" aria-pressed="false">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg>
+        </button>
+      </div>
+    </header>
 
-        <main class="main-content">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="url">URL do Capítulo</label>
-                    <input id="url" type="text" placeholder="https://mangadex.org/chapter/..." required>
-                    <small style="color: #6b7280; display:block; margin-top:6px;">Apenas MangaDex (mangadex.org) é suportado.</small>
-                </div>
-                
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="name">Nome do Mangá</label>
-                        <input id="name" type="text" placeholder="Ex: One Piece" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="chapter">Capítulo</label>
-                        <input id="chapter" type="text" placeholder="Ex: 1000" required>
-                    </div>
-                </div>
-                
-                <button id="startButton" class="primary-button">📥 Download & Gerar PDF</button>
+    <main class="main-content" role="main">
+      <article class="chapter-card" aria-labelledby="chapterTitle">
+        <div class="chapter-cover">
+          <div class="cover-placeholder" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <span>Capa do capítulo</span>
+          </div>
+          <span class="chapter-badge" id="chapterBadge" aria-label="Capítulo 1">Cap. 1</span>
+        </div>
+        <div class="chapter-info">
+          <h1 id="chapterTitle" class="chapter-title">Aguardando URL...</h1>
+          <div class="chapter-meta">
+            <span class="meta-item" aria-label="Mangá não definido">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span id="metaManga">—</span>
+            </span>
+            <span class="meta-item" aria-label="Capítulo não definido">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span id="metaChapter">—</span>
+            </span>
+          </div>
+        </div>
+        <div class="trust-badge" role="status" aria-live="polite">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span class="trust-badge-text">Powered by <a href="https://mangadex.org" target="_blank" rel="noopener noreferrer" class="trust-badge-link">MangaDex API</a> — Oficial</span>
+        </div>
+      </article>
+
+      <section class="input-section" aria-labelledby="inputHeading">
+        <h2 id="inputHeading" class="sr-only">Configurar download</h2>
+        <div class="input-group">
+          <label for="url" class="input-label">URL do Capítulo</label>
+          <div class="input-wrapper">
+            <input type="url" id="url" class="input-field" placeholder="https://mangadex.org/chapter/..." required aria-describedby="urlHint" autocomplete="url">
+            <span id="urlHint" class="input-hint">Cole a URL do capítulo no MangaDex</span>
+            <span class="input-error" id="urlError" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="name" class="input-label">Nome do Mangá</label>
+          <div class="input-wrapper">
+            <input type="text" id="name" class="input-field" placeholder="Ex: One Piece" required aria-describedby="nameHint" autocomplete="off">
+            <span id="nameHint" class="input-hint">Usado para nomear o arquivo PDF</span>
+            <span class="input-error" id="nameError" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="chapter" class="input-label">Número do Capítulo</label>
+          <div class="input-wrapper">
+            <input type="number" id="chapter" class="input-field" placeholder="Ex: 1000" required min="1" step="1" aria-describedby="chapterHint" inputmode="numeric">
+            <span id="chapterHint" class="input-hint">Número do capítulo para o nome do arquivo</span>
+            <span class="input-error" id="chapterError" aria-live="polite"></span>
+          </div>
+        </div>
+        <button type="button" id="startButton" class="primary-btn" aria-live="polite" disabled>
+          <span class="btn-text">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar & Gerar PDF
+          </span>
+          <span class="btn-loader" aria-hidden="true">
+            <span class="spinner"></span>
+            <span>Processando...</span>
+          </span>
+        </button>
+      </section>
+
+      <section class="progress-section" id="progressSection" aria-labelledby="progressHeading" hidden>
+        <h2 id="progressHeading" class="sr-only">Progresso do download</h2>
+        <div class="progress-header">
+          <span class="progress-title">Progresso</span>
+          <span class="progress-percent" id="progressPercent" aria-live="polite">0%</span>
+        </div>
+        <div class="progress-bar-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do download">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div class="progress-steps" role="list" aria-label="Etapas do processo">
+          <div class="step" id="step1" role="listitem" aria-label="Buscando metadados">
+            <div class="step-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
-
-            <div class="status-section">
-                <div class="progress-container">
-                    <progress id="progress" value="0" max="100"></progress>
-                    <span id="progress-text">0%</span>
-                </div>
-                <p id="status" class="status-message">Pronto para começar</p>
+            <span class="step-label">Buscando</span>
+          </div>
+          <div class="step" id="step2" role="listitem" aria-label="Baixando páginas">
+            <div class="step-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>
             </div>
-        </main>
+            <span class="step-label">Baixando</span>
+          </div>
+          <div class="step" id="step3" role="listitem" aria-label="Gerando PDF">
+            <div class="step-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <span class="step-label">PDF</span>
+          </div>
+        </div>
+        <div class="thumbnails" id="thumbnails" aria-label="Páginas baixadas" role="list"></div>
+        <div class="status-message" id="statusMessage" role="status" aria-live="polite" aria-atomic="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span id="statusText">Pronto para começar</span>
+        </div>
+      </section>
+    </main>
 
-        <footer class="footer">
-            <p>© 2025 MangaScraper | Feito com ❤️ para os fãs de mangá</p>
-        </footer>
-    </div>
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">© 2025 MangaScraper — Feito para fãs de mangá</p>
+      <div class="footer-links">
+        <a href="https://mangadex.org" target="_blank" rel="noopener noreferrer" class="footer-link">MangaDex</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+      </div>
+    </footer>
+  </div>
 
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <div class="toast" id="toast" role="alert" aria-live="assertive" hidden>
+    <svg id="toastIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    <span id="toastText"></span>
+  </div>
+
+  <div id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
