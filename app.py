@@ -133,9 +133,11 @@ app = Flask(
 )
 
 # Estado global para controle de progresso
-status = {"state": "IDLE", "progress": 0, "message": "Idle"}
+status = {"state": "IDLE", "progress": 0, "message": "Idle", "pages": {"current": 0, "total": 0}}
 # Armazena temporariamente o PDF gerado: {'buffer': BytesIO, 'filename': str}
 current_pdf = None
+# Total de páginas do capítulo atual (extraído durante o scraping)
+current_total_pages = 0
 
 @app.route("/")
 def index():
@@ -158,7 +160,7 @@ def start():
         return jsonify({"error": "Only MangaDex URLs are supported"}), 400
 
     # Reseta status para novo processo
-    status = {"state": "PROCESSING", "progress": 0, "message": "Starting..."}
+    status = {"state": "PROCESSING", "progress": 0, "message": "Starting...", "pages": {"current": 0, "total": 0}}
     
     thread = threading.Thread(
         target=run_pipeline,
@@ -218,9 +220,10 @@ def debug_fetch():
         return jsonify({"error": str(e)}), 500
 
 def run_pipeline(url, name, chapter):
-    global status, current_pdf
+    global status, current_pdf, current_total_pages
+    current_total_pages = 0
     try:
-        status.update({"state": "FETCHING_METADATA", "progress": 5, "message": "Fetching metadata"})
+        status.update({"state": "FETCHING_METADATA", "progress": 5, "message": "Fetching metadata", "pages": {"current": 0, "total": 0}})
 
         result = fetch_manga_chapter(
             url=url,
@@ -238,7 +241,8 @@ def run_pipeline(url, name, chapter):
             status.update({
                 "state": "COMPLETED",
                 "progress": 100,
-                "message": "PDF ready for download"
+                "message": "PDF ready for download",
+                "pages": {"current": current_total_pages, "total": current_total_pages}
             })
         else:
             status.update({"state": "ERROR", "message": "Failed to generate PDF"})
@@ -248,8 +252,22 @@ def run_pipeline(url, name, chapter):
         print(f"[ERROR] Pipeline failed: {str(e)}")
 
 def update_status(progress, message):
+    global current_total_pages
     status["progress"] = progress
     status["message"] = message
+
+    # Extrair info de páginas da mensagem: "Downloading pages (5/20)"
+    import re
+    match = re.search(r'\((\d+)/(\d+)\)', message)
+    if match:
+        current = int(match.group(1))
+        total = int(match.group(2))
+        if total > 0:
+            current_total_pages = total
+            status["pages"] = {"current": current, "total": total}
+    elif "Fetching chapter pages" in message and current_total_pages == 0:
+        # Reset no início
+        status["pages"] = {"current": 0, "total": 0}
 
 @app.route("/health")
 def health():
