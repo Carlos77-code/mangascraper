@@ -1,10 +1,14 @@
+import re
 import requests
 from scrapers.scraper_base import BaseScraper
 
 
 class MangaDexScraper(BaseScraper):
     def extract_chapter_id(self, url: str) -> str:
-        return url.rstrip("/").split("/")[-1]
+        match = re.search(r"/chapter/([0-9a-f-]+)", url)
+        if not match:
+            raise ValueError(f"Could not extract chapter ID from URL: {url}")
+        return match.group(1)
 
     def fetch(self, url: str):
         print("[MangaDex] Calling At-Home API...")
