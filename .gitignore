@@ -9,3 +9,30 @@ __pycache__/
 *.pywz
 *.pyzw
 *.pyzwz
+node_modules
+node_modules/
+# Python
+.env
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Node
+node_modules/
+package-lock.json   # opcional, muitos times mantém
+
+# Electron build
+dist/
+*.asar
+*.exe
+
+# MangaScraper runtime
+cookies.json
+
+# IDE
+.vscode/
+.opencode/
+
+# Logs
+*.log

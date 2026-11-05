@@ -34,8 +34,48 @@
     </header>
 
     <main class="main-content" role="main">
-      <article class="chapter-card" aria-labelledby="chapterTitle">
+      <div class="top-grid">
+        <section class="input-section" aria-labelledby="inputHeading">
+          <h2 id="inputHeading" class="sr-only">Configurar download</h2>
+          <div class="input-group">
+            <label for="url" class="input-label">URL do Capítulo</label>
+            <div class="input-wrapper">
+              <input type="url" id="url" class="input-field" placeholder="https://mangadex.org/chapter/..." required aria-describedby="urlHint" autocomplete="url">
+              <span id="urlHint" class="input-hint">Cole a URL do capítulo no MangaDex</span>
+              <span class="input-error" id="urlError" aria-live="polite"></span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="name" class="input-label">Nome do Mangá</label>
+            <div class="input-wrapper">
+              <input type="text" id="name" class="input-field" placeholder="Ex: One Piece" required aria-describedby="nameHint" autocomplete="off">
+              <span id="nameHint" class="input-hint">Usado para nomear o arquivo PDF</span>
+              <span class="input-error" id="nameError" aria-live="polite"></span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="chapter" class="input-label">Número do Capítulo</label>
+            <div class="input-wrapper">
+              <input type="number" id="chapter" class="input-field" placeholder="Ex: 1000" required min="1" step="1" aria-describedby="chapterHint" inputmode="numeric">
+              <span id="chapterHint" class="input-hint">Número do capítulo para o nome do arquivo</span>
+              <span class="input-error" id="chapterError" aria-live="polite"></span>
+            </div>
+          </div>
+          <button type="button" id="startButton" class="primary-btn" aria-live="polite" disabled>
+            <span class="btn-text">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar & Gerar PDF
+            </span>
+            <span class="btn-loader" aria-hidden="true">
+              <span class="spinner"></span>
+              <span>Processando...</span>
+            </span>
+          </button>
+        </section>
+
+        <article class="chapter-card" aria-labelledby="chapterTitle">
         <div class="chapter-cover">
+          <img id="chapterCoverImg" class="chapter-cover-img" alt="Capa do capítulo" style="display:none;">
           <div class="cover-placeholder" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="3" width="20" height="18" rx="2" ry="2"/>
@@ -68,43 +108,7 @@
         </div>
       </article>
 
-      <section class="input-section" aria-labelledby="inputHeading">
-        <h2 id="inputHeading" class="sr-only">Configurar download</h2>
-        <div class="input-group">
-          <label for="url" class="input-label">URL do Capítulo</label>
-          <div class="input-wrapper">
-            <input type="url" id="url" class="input-field" placeholder="https://mangadex.org/chapter/..." required aria-describedby="urlHint" autocomplete="url">
-            <span id="urlHint" class="input-hint">Cole a URL do capítulo no MangaDex</span>
-            <span class="input-error" id="urlError" aria-live="polite"></span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label for="name" class="input-label">Nome do Mangá</label>
-          <div class="input-wrapper">
-            <input type="text" id="name" class="input-field" placeholder="Ex: One Piece" required aria-describedby="nameHint" autocomplete="off">
-            <span id="nameHint" class="input-hint">Usado para nomear o arquivo PDF</span>
-            <span class="input-error" id="nameError" aria-live="polite"></span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label for="chapter" class="input-label">Número do Capítulo</label>
-          <div class="input-wrapper">
-            <input type="number" id="chapter" class="input-field" placeholder="Ex: 1000" required min="1" step="1" aria-describedby="chapterHint" inputmode="numeric">
-            <span id="chapterHint" class="input-hint">Número do capítulo para o nome do arquivo</span>
-            <span class="input-error" id="chapterError" aria-live="polite"></span>
-          </div>
-        </div>
-        <button type="button" id="startButton" class="primary-btn" aria-live="polite" disabled>
-          <span class="btn-text">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Baixar & Gerar PDF
-          </span>
-          <span class="btn-loader" aria-hidden="true">
-            <span class="spinner"></span>
-            <span>Processando...</span>
-          </span>
-        </button>
-      </section>
+      </div>
 
       <section class="progress-section" id="progressSection" aria-labelledby="progressHeading" hidden>
         <h2 id="progressHeading" class="sr-only">Progresso do download</h2>
@@ -158,6 +162,9 @@
   </div>
 
   <div id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Electron adapter - intercepta download para usar diálogo nativo -->
+  <script src="{{ url_for('static', filename='electron-adapter.js') }}"></script>
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
