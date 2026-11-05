@@ -159,6 +159,9 @@
 
   <div id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
+  <!-- Electron adapter - intercepta download para usar diálogo nativo -->
+  <script src="{{ url_for('static', filename='electron-adapter.js') }}"></script>
+
   <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
