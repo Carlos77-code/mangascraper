@@ -105,9 +105,9 @@ function startFlask() {
 // Cria a janela do Electron
 function createWindow() {
   window = new BrowserWindow({
-    width: 420,
+    width: 900,
     height: 720,
-    minWidth: 360,
+    minWidth: 800,
     minHeight: 600,
     title: 'MangaScraper',
     backgroundColor: '#0D0D0D',
@@ -127,6 +127,13 @@ function createWindow() {
     {
       label: 'Ferramentas',
       submenu: [
+        {
+          label: 'Atualizar Tela',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => {
+            if (window) window.reload();
+          }
+        },
         {
           label: 'Resolver Cloudflare',
           click: async () => {

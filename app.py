@@ -273,7 +273,60 @@ def update_status(progress, message):
 def health():
     """Endpoint para verificação de saúde (corrigido de '/' para '/health')"""
     return {"status": "running"}, 200
-    
+
+@app.route("/cover", methods=["POST"])
+def get_cover():
+    data = request.json
+    if not data or not data.get("url"):
+        return jsonify({"error": "Missing url"}), 400
+    url = data.get("url")
+    if "mangadex.org" not in url:
+        return jsonify({"error": "Only MangaDex URLs are supported"}), 400
+    try:
+        import re
+        import cloudscraper
+        match = re.search(r"/chapter/([a-f0-9-]+)", url, re.I)
+        if not match:
+            return jsonify({"error": "Could not extract chapter ID"}), 400
+        chapter_id = match.group(1)
+        scraper = cloudscraper.create_scraper(browser='chrome', delay=5)
+        # Get chapter metadata
+        r = scraper.get(f"https://api.mangadex.org/chapter/{chapter_id}", timeout=20)
+        if r.status_code != 200:
+            return jsonify({"error": f"API returned {r.status_code}"}), 500
+        data_json = r.json()
+        # Find manga relationship
+        manga_id = None
+        for rel in data_json.get("data", {}).get("relationships", []):
+            if rel.get("type") == "manga":
+                manga_id = rel.get("id")
+                break
+        if not manga_id:
+            return jsonify({"error": "Manga ID not found"}), 500
+        # Get manga cover
+        r2 = scraper.get(f"https://api.mangadex.org/manga/{manga_id}", timeout=20)
+        if r2.status_code != 200:
+            return jsonify({"error": f"Manga API returned {r2.status_code}"}), 500
+        manga_data = r2.json()
+        cover_id = None
+        for rel in manga_data.get("data", {}).get("relationships", []):
+            if rel.get("type") == "cover_art":
+                cover_id = rel.get("id")
+                break
+        if not cover_id:
+            return jsonify({"cover": None}), 200
+        # Get cover image file name
+        r3 = scraper.get(f"https://api.mangadex.org/cover/{cover_id}", timeout=20)
+        if r3.status_code != 200:
+            return jsonify({"error": f"Cover API returned {r3.status_code}"}), 500
+        cover_file = r3.json().get("data", {}).get("attributes", {}).get("fileName")
+        if not cover_file:
+            return jsonify({"cover": None}), 200
+        cover_url = f"https://uploads.mangadex.org/covers/{manga_id}/{cover_file}"
+        return jsonify({"cover": cover_url})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port, debug=False)

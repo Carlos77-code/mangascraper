@@ -26,6 +26,8 @@
     chapterBadge: document.getElementById('chapterBadge'),
     metaManga: document.getElementById('metaManga'),
     metaChapter: document.getElementById('metaChapter'),
+    chapterCoverImg: document.getElementById('chapterCoverImg'),
+    coverPlaceholder: document.querySelector('.cover-placeholder'),
 
     // Form
     urlInput: document.getElementById('url'),
@@ -147,7 +149,7 @@
   }
 
   // ============ CHAPTER CARD UPDATE ============
-  function updateChapterCard(url, name, chapter) {
+  async function updateChapterCard(url, name, chapter) {
     if (url) {
       const match = url.match(/chapter\/([a-f0-9-]+)/i);
       if (match) {
@@ -155,6 +157,22 @@
         els.chapterBadge.textContent = `Cap. ${chapter}`;
         els.metaManga.textContent = name || '—';
         els.metaChapter.textContent = chapter || '—';
+        // Fetch cover
+        try {
+          const res = await fetch('/cover', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+          });
+          const data = await res.json();
+          if (data.cover) {
+            els.chapterCoverImg.src = data.cover;
+            els.chapterCoverImg.style.display = 'block';
+            if (els.coverPlaceholder) els.coverPlaceholder.style.display = 'none';
+          }
+        } catch (e) {
+          console.warn('Cover fetch failed', e);
+        }
       }
     }
   }

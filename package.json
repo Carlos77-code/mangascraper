@@ -1,6 +1,6 @@
 {
   "name": "mangascraper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MangaScraper - Baixe capítulos de mangá do MangaDex e converta em PDF",
   "main": "main.js",
   "scripts": {
